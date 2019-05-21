@@ -12,6 +12,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         Log.v("Lancemen", "reussi");
         but = (Button) findViewById(R.id.button);
         sw1 = (Switch) findViewById(R.id.switch1);
+        sw2 = (Switch) findViewById(R.id.switch2);
         derou = (ScrollView) findViewById(R.id.deroule);
         but.setEnabled(false);
         sw1.setChecked(false);
@@ -55,40 +59,90 @@ public class MainActivity extends AppCompatActivity {
                 if(sw1.isChecked()){
                     String test = "https://www.offi.fr/cinema/filmotheque-quartier-latin-2323.html";
                     Log.v("cine 1", "check");
-                    getSoup(test);
+                    ArrayList<String> dates = new ArrayList();
+                    dates.add("22/05");
+                    dates.add("23/05");
+                    getSoup(test,"22/05");
                 }else if(sw2.isChecked()){
+                    String test = "https://www.offi.fr/cinema/filmotheque-quartier-latin-2323.html";
                     Log.v("cine 2"," check");
-                    //getSoup();
-                }
+                    getSoup(test);                }
             }
         });
     }
+
+
 
     private void getSoup(String a) {
         Document doc = null;
         StringBuilder sb = new StringBuilder();
         TextView tv = new TextView(this);
+derou.removeAllViews();
 
         try {
             doc = Jsoup.connect(a).get();
             Elements li = doc.select("div.progArrondissement");
             Elements el = doc.select("div.progArrondissement ~ div.progTabBlock");
 
-            for( Element e : li){
+            for( Element e : li) {
                 int v = li.indexOf(e);
 
-                sb.append("---------------");
-                sb.append("\nTitre : " +e.text() + "\n");
+                    sb.append("---------------");
+                    sb.append("\nTitre : " + e.text() + "\n");
 
-                for(Element e1 : el.eq(v) ){
 
-                    for(int i = 0; i < e1.select("a").size(); i++) {
-                        sb.append("\n" + e1.select("a").get(i).text() + "  ");
-                        sb.append(e1.select("p").get(i).text() + "\n");
-                        sb.append("\n");
+                    for (Element e1 : el.eq(v)) {
+
+                        for (int i = 0; i < e1.select("a").size(); i++) {
+                                sb.append("\n" + e1.select("a").get(i).text() + "  ");
+                                sb.append(e1.select("p").get(i).text() + "\n");
+                                sb.append("\n");
+
+                        }
                     }
+                    sb.append("---------------");
                 }
-                sb.append("---------------");
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        tv.setText(sb);
+        derou.addView(tv);
+    }
+
+    private void getSoup(String a, String b) {
+        Document doc = null;
+        StringBuilder sb = new StringBuilder();
+        TextView tv = new TextView(this);
+        derou.removeAllViews();
+
+        try {
+            doc = Jsoup.connect(a).get();
+            Elements li = doc.select("div.progArrondissement");
+            Elements el = doc.select("div.progArrondissement ~ div.progTabBlock");
+
+            for( Element e : li) {
+                int v = li.indexOf(e);
+
+                if (el.get(v).select("a").text().contains(b)) {
+                    Log.v("b is : ", b.toString());
+                    sb.append("---------------");
+                    sb.append("\nTitre : " + e.text() + "\n");
+
+
+                    for (Element e1 : el.eq(v)) {
+
+                        for (int i = 0; i < e1.select("a").size(); i++) {
+                            if (e1.select("a").get(i).text().contains(b)){
+                                sb.append("\n" + e1.select("a").get(i).text() + "  ");
+                            sb.append(e1.select("p").get(i).text() + "\n");
+                            sb.append("\n");
+                        }
+                        }
+                    }
+                    sb.append("---------------");
+                }
             }
 
         } catch (IOException e) {

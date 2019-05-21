@@ -9,7 +9,7 @@
 
     <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="448dp"
+            android:layout_height="450dp"
             android:textAlignment="center"
             android:id="@+id/deroule"
     />
@@ -18,6 +18,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/switch1"
+            android:height="50dp"
+    />
+    <Switch
+            android:text="Switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/switch2"
             android:height="50dp"
     />
     <Button
